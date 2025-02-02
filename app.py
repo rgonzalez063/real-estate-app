@@ -8,11 +8,19 @@ from sklearn.model_selection import train_test_split
 # Load and clean data
 def load_data(file_path):
     data = pd.read_csv(file_path)
+    print("Column types:\n", data.dtypes)  # Debugging: Print column types
+    print("Missing values:\n", data.isnull().sum())  # Debugging: Print missing values
     return data
 
 def clean_data(data):
     # Drop rows with missing values in key columns
-    data.dropna(subset=['Close Price', 'Sq Ft Source', 'Bedrooms', 'Baths Total'], inplace=True)
+    data.dropna(subset=['Close Price', 'Bedrooms', 'Baths Total'], inplace=True)
+    
+    # Convert 'Building SqFt' to numeric, coercing errors to NaN
+    data['Building SqFt'] = pd.to_numeric(data['Building SqFt'], errors='coerce')
+    
+    # Drop rows where 'Building SqFt' is NaN (invalid or missing values)
+    data.dropna(subset=['Building SqFt'], inplace=True)
     
     # Convert data types
     data['Close Date'] = pd.to_datetime(data['Close Date'])
@@ -20,7 +28,7 @@ def clean_data(data):
     data['Year Built'] = pd.to_numeric(data['Year Built'], errors='coerce')
     
     # Calculate additional metrics
-    data['PricePerSqFt'] = data['Close Price'] / data['Sq Ft Source']
+    data['PricePerSqFt'] = data['Close Price'] / data['Building SqFt']
     data['DOM'] = pd.to_numeric(data['DOM'], errors='coerce')
     data['SP/LP Ratio'] = data['Close Price'] / data['List Price']
     
@@ -88,7 +96,7 @@ def generate_commentary(analysis):
 # Regression model
 def predict_price(data):
     # Select features and target
-    features = ['Sq Ft Source', 'Bedrooms', 'Baths Total']
+    features = ['Building SqFt', 'Bedrooms', 'Baths Total']
     X = data[features]
     y = data['Close Price']
     
