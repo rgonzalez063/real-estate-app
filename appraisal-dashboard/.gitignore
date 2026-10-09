@@ -4,3 +4,5 @@ dist-ssr
 *.local
 .DS_Store
 coverage
+e2e/output
+.e2e-tmp

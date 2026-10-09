@@ -1,0 +1,5 @@
+MLS #,Address,City,Zip Code,Subdivision,Status,Close Price,List Price,Close Date,Pending Date,DOM,GLA,Lot Size,Beds,Baths Full,Baths Half,Year Built,Garage Spaces,Private Pool Y/N,Condition,Quality,Seller Concessions,Latitude,Longitude,Photo URL
+55501,"400 Harbor Way",Houston,77001,Oak Park,Closed,"$412,000","$419,900",07/15/2026,06/20/2026,21,"2,150",0.21,4,2,1,2006,2,N,C3,Q3,"$0",29.7,-95.4,https://example.com/p.jpg
+55502,"402 Harbor Way",Houston,77001,Oak Park,Sold,"$398,500","$399,000",05/03/2026,04/10/2026,14,2010,9200,3,2,0,2004,2,Y,C4,Q3,"$3,500",29.701,-95.401,
+55503,"17 Marina Ct",Houston,77001,Oak Park,Active,,"$449,000",,,12,2300,0.25,4,3,,2012,2,N,C2,Q3,,29.702,-95.402,
+55501,"400 Harbor Way",Houston,77001,Oak Park,Closed,"$412,000","$419,900",07/15/2026,06/20/2026,21,2150,0.21,4,2,1,2006,2,N,C3,Q3,0,29.7,-95.4,
