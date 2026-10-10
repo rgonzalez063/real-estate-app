@@ -11,7 +11,9 @@
     "test:watch": "vitest",
     "typecheck": "tsc -b",
     "lint": "eslint .",
-    "e2e": "node e2e/smoke.mjs"
+    "e2e": "node e2e/smoke.mjs",
+    "build:single": "vite build --config vite.singlefile.config.ts && node scripts/rename-single.mjs",
+    "e2e:single": "node e2e/single-file.mjs"
   },
   "dependencies": {
     "idb-keyval": "^6.2.1",
@@ -40,6 +42,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
+    "vite-plugin-singlefile": "^2.0.2",
     "vitest": "^2.0.5"
   }
 }

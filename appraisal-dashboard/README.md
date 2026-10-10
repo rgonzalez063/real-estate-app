@@ -4,7 +4,15 @@ Interactive, browser-only dashboard for the sales comparison approach: import co
 
 Everything runs locally in the browser. There is no backend, no account, and no paid API. Projects are saved in IndexedDB and can be exported as JSON backups.
 
-## Setup
+## Easiest way to run: the self-contained file
+
+`release/Gonzalez-Appraisal-Dashboard.html` is the whole app in one file. Download it, double-click it, and it opens in your browser. No install, no server, no internet.
+
+- Works in Chrome, Edge and Firefox. Projects are saved inside that browser (IndexedDB), so keep using the same browser and the same copy of the file to see your saved projects. Use *Export → Project backup (JSON)* for a portable copy you can restore anywhere.
+- Safari may clear local storage for files opened from disk; export a backup before closing if you use Safari.
+- To rebuild it after code changes: `npm run build:single`.
+
+## Setup for development
 
 Requires Node 18+.
 
@@ -23,6 +31,8 @@ npm run lint       # eslint
 npm run build      # production build in dist/
 npm run preview    # serve dist/ on http://localhost:4173
 npm run e2e        # Playwright browser smoke test against the preview server (needs a Chromium; set PW_EXECUTABLE if not auto-detected)
+npm run build:single  # rebuild release/Gonzalez-Appraisal-Dashboard.html (single self-contained file)
+npm run e2e:single    # open the single file from disk in a browser and check it runs
 ```
 
 ## How to use
