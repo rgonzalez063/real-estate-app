@@ -63,7 +63,8 @@ await page.screenshot({ path: `${S}/shot-charts.png` });
 await page.getByRole('tab', { name: 'Cards' }).click();
 
 // Import flow
-await page.getByRole('button', { name: /Import CSV/ }).click();
+await page.getByRole('button', { name: /Import/ }).first().click();
+await page.getByRole('menuitem', { name: /CSV/ }).click();
 await page.locator('input[type=file]').setInputFiles(path.join(here, 'fixtures', 'harmls_sample.csv'));
 await expectText('Map fields');
 await expectText('Lot sizes have no units');

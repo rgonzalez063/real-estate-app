@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { AdjustmentOverride, AdjustmentRule, CategoryResolution, Comparable, FinalOpinion, MappingPreset, Project, PropertyAttributes, Scenario, ScenarioSettings } from '../types';
+import type { AdjustmentOverride, AdjustmentRule, CategoryResolution, Comparable, FinalOpinion, MappingPreset, ParseIssue, Project, PropertyAttributes, Scenario, ScenarioSettings } from '../types';
 import { duplicateScenario, newProject, newScenario } from '../engine/defaults';
 import { buildDemoProject } from '../engine/demo';
 import { makeId } from '../engine/ids';
@@ -23,6 +23,7 @@ export interface UiState {
   rightOpen: boolean;
   mobileTab: MobileTab;
   importOpen: boolean;
+  docImportOpen: boolean;
   compareOpen: boolean;
   reportOpen: boolean;
   projectsOpen: boolean;
@@ -63,6 +64,8 @@ export interface AppState {
   setSubjectAttrs: (patch: Partial<PropertyAttributes>) => void;
   setSubjectNotes: (notes: string) => void;
   setSubjectPhotos: (urls: string[]) => void;
+  /** Replace subject attributes with imported values (unknown imported values leave existing ones untouched). */
+  setSubjectFromImport: (attrs: Partial<PropertyAttributes>, source: { file: string; row: Record<string, string>; issues: ParseIssue[] }) => void;
   addComparables: (comps: Comparable[]) => void;
   removeComparables: (ids: string[]) => void;
   toggleIncluded: (id: string, included?: boolean) => void;
@@ -135,6 +138,7 @@ export const useAppStore = create<AppState>((set, get) => {
       rightOpen: true,
       mobileTab: 'comps',
       importOpen: false,
+      docImportOpen: false,
       compareOpen: false,
       reportOpen: false,
       projectsOpen: false,
@@ -245,6 +249,14 @@ export const useAppStore = create<AppState>((set, get) => {
     setSubjectAttrs: (patch) => get().mutateScenario('Subject', (s) => { Object.assign(s.subject.attrs, patch); }, { key: 'subject:multi' }),
     setSubjectNotes: (notes) => get().mutateScenario('Subject notes', (s) => { s.subject.notes = notes; }, { key: 'subject:notes' }),
     setSubjectPhotos: (urls) => get().mutateScenario('Subject photos', (s) => { s.subject.photoUrls = urls; }),
+    setSubjectFromImport: (attrs, source) => get().mutateScenario('Import subject', (s) => {
+      for (const [k, v] of Object.entries(attrs)) {
+        if (v !== null && v !== undefined) (s.subject.attrs as unknown as Record<string, unknown>)[k] = v;
+      }
+      s.subject.sourceFile = source.file;
+      s.subject.sourceRow = source.row;
+      s.subject.parseIssues = source.issues;
+    }),
 
     addComparables: (comps) => get().mutateScenario('Import comparables', (s) => { s.comparables.push(...comps); }),
     removeComparables: (ids) => get().mutateScenario('Remove comparables', (s) => { s.comparables = s.comparables.filter((c) => !ids.includes(c.id)); }),

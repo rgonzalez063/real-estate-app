@@ -142,6 +142,8 @@ export interface Comparable {
   gridNote: string;
   /** True for synthetic demo rows. */
   synthetic?: boolean;
+  /** Present when the record was extracted from a document rather than a CSV. */
+  extraction?: ExtractionInfo;
 }
 
 export interface AdjustmentOverride {
@@ -229,6 +231,20 @@ export interface ScenarioSettings {
 export interface SubjectProperty {
   attrs: PropertyAttributes;
   photoUrls: string[];
+  notes: string;
+  /** Where the subject data came from when imported from a CSV row or a document. */
+  sourceFile?: string;
+  sourceRow?: Record<string, string>;
+  parseIssues?: ParseIssue[];
+}
+
+/** Provenance for records extracted from PDFs / images. */
+export interface ExtractionInfo {
+  method: 'ai' | 'local';
+  model?: string;
+  file: string;
+  confidence: 'high' | 'medium' | 'low';
+  evidence: { field: string; quote: string }[];
   notes: string;
 }
 

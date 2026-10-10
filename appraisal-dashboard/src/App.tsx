@@ -9,6 +9,7 @@ import { CardsView } from './components/comps/CardsView';
 import { ComparisonGrid } from './components/grid/ComparisonGrid';
 import { ChartsView } from './components/charts/ChartsView';
 import { ImportWizard } from './components/import/ImportWizard';
+import { DocumentImport } from './components/import/DocumentImport';
 import { ProjectsModal } from './components/scenarios/ProjectsModal';
 import { ScenarioCompare } from './components/scenarios/ScenarioCompare';
 import { PrintReport } from './components/report/PrintReport';
@@ -191,6 +192,7 @@ export default function App() {
       </div>
       )}
       <ImportWizard />
+      <DocumentImport />
       <ProjectsModal />
       <ScenarioCompare project={project} />
       <Toast />

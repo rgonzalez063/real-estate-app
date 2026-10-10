@@ -51,7 +51,9 @@ function parseFile(file: File): Promise<ParsedFile> {
 }
 
 export function ImportWizard() {
-  const { ui, setUi, addComparables, globalPresets, savePreset, deletePreset, toast } = useAppStore();
+  const { ui, setUi, addComparables, setSubjectFromImport, globalPresets, savePreset, deletePreset, toast } = useAppStore();
+  const [target, setTarget] = useState<'comparables' | 'subject'>('comparables');
+  const [subjectRowId, setSubjectRowId] = useState<string | null>(null);
   const scenario = useAppStore((s) => activeScenarioOf(s.project));
   const [files, setFiles] = useState<ParsedFile[]>([]);
   const [active, setActive] = useState(0);
@@ -64,6 +66,8 @@ export function ImportWizard() {
     setActive(0);
     setStep('files');
     setKeep({});
+    setTarget('comparables');
+    setSubjectRowId(null);
   }, []);
   const close = useCallback(() => {
     setUi({ importOpen: false });
@@ -108,6 +112,14 @@ export function ImportWizard() {
   };
   const allBlockers = files.flatMap((f, i) => blockers(f, i).map((b) => `${f.name}: ${b}`));
 
+  const finishSubject = () => {
+    const row = allNew.find((c) => c.id === subjectRowId);
+    if (!row) return;
+    setSubjectFromImport(row.attrs, { file: row.sourceFile, row: row.raw, issues: row.parseIssues });
+    toast(`Subject property updated from ${row.sourceFile} (row ${row.sourceRowIndex + 1}).`);
+    close();
+  };
+
   const finish = () => {
     const comps = allNew.filter((c) => keep[c.id] !== false);
     addComparables(comps);
@@ -121,7 +133,7 @@ export function ImportWizard() {
     <Modal
       open={ui.importOpen}
       onClose={close}
-      title="Import comparable CSV files"
+      title={target === 'subject' ? 'Import subject property from CSV' : 'Import comparable CSV files'}
       wide
       footer={
         <div className="flex items-center justify-between gap-2">
@@ -143,9 +155,14 @@ export function ImportWizard() {
                 Preview
               </button>
             )}
-            {step === 'preview' && (
+            {step === 'preview' && target === 'comparables' && (
               <button className="btn-primary" onClick={() => setStep('duplicates')}>
                 Check duplicates
+              </button>
+            )}
+            {step === 'preview' && target === 'subject' && (
+              <button className="btn-primary" disabled={!subjectRowId} onClick={finishSubject}>
+                Use selected row as subject
               </button>
             )}
             {step === 'duplicates' && (
@@ -186,6 +203,17 @@ export function ImportWizard() {
               ))}
             </ul>
           )}
+          <fieldset className="mt-3 rounded-md border border-slate-200 p-3">
+            <legend className="px-1 text-xs font-medium text-slate-600">Import as</legend>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <label className="flex items-center gap-2">
+                <input type="radio" name="csv-target" checked={target === 'comparables'} onChange={() => setTarget('comparables')} /> Comparable sales / listings <span className="text-xs text-slate-500">(added to the existing comps; import as many files as you like)</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="csv-target" checked={target === 'subject'} onChange={() => setTarget('subject')} /> Subject property <span className="text-xs text-slate-500">(pick one row on the preview step)</span>
+              </label>
+            </div>
+          </fieldset>
           {files.length > 0 && (
             <button className="btn-primary mt-3" onClick={() => setStep('mapping')}>
               Continue to mapping
@@ -247,6 +275,7 @@ export function ImportWizard() {
                   <table className="w-full text-[11px]">
                     <thead className="sticky top-0 bg-white">
                       <tr className="text-left text-slate-500">
+                        {target === 'subject' && <th className="px-2 py-1">Subject</th>}
                         <th className="px-2 py-1">#</th>
                         <th className="px-2 py-1">Address</th>
                         <th className="px-2 py-1">Status</th>
@@ -260,7 +289,12 @@ export function ImportWizard() {
                     </thead>
                     <tbody>
                       {n.comps.slice(0, 50).map((c) => (
-                        <tr key={c.id} className="border-t border-slate-100">
+                        <tr key={c.id} className={`border-t border-slate-100 ${subjectRowId === c.id ? 'bg-navy-50' : ''}`}>
+                          {target === 'subject' && (
+                            <td className="px-2 py-1">
+                              <input type="radio" name="subject-row" checked={subjectRowId === c.id} onChange={() => setSubjectRowId(c.id)} aria-label={`Use row ${c.sourceRowIndex + 1} as subject`} />
+                            </td>
+                          )}
                           <td className="px-2 py-1 text-slate-400">{c.sourceRowIndex + 1}</td>
                           <td className="px-2 py-1">{c.attrs.address ?? <span className="text-slate-400">unknown</span>}</td>
                           <td className="px-2 py-1">{c.attrs.statusRaw ?? '—'}</td>

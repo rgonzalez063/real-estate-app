@@ -18,6 +18,22 @@ export function SubjectForm({ subject, effectiveDate }: { subject: SubjectProper
       <Field label="Appraisal effective date" htmlFor="subject-effective-date" hint="Drives market conditions (time) adjustments.">
         <TextInput id="subject-effective-date" type="date" value={effectiveDate} onChange={setEffectiveDate} />
       </Field>
+      {subject.sourceFile && (
+        <div className="rounded-md border border-slate-200 bg-slate-50 p-2 text-[11px] text-slate-600">
+          <div>
+            Imported from <span className="font-medium">{subject.sourceFile}</span>. Edits below override the imported values.
+          </div>
+          {subject.parseIssues && subject.parseIssues.length > 0 && (
+            <ul className="mt-1 list-disc pl-4 text-amber-800">
+              {subject.parseIssues.map((p, i) => (
+                <li key={i}>
+                  {p.field}: {p.message}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
       <AttributeForm attrs={subject.attrs} onChange={setSubjectAttrs} mode="subject" idPrefix="subject" />
       <div>
         <div className="section-title mb-2">Photos (optional)</div>

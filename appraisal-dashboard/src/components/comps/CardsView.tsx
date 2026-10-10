@@ -25,10 +25,15 @@ export function CardsView({ scenario, calc }: { scenario: Scenario; calc: Scenar
   if (!scenario.comparables.length) {
     return (
       <EmptyState title="No comparables yet">
-        <p>Import one or more CSV exports (HARMLS / Matrix style) to begin. Mapping is reviewed before anything is added.</p>
-        <button className="btn-primary" onClick={() => setUi({ importOpen: true })}>
-          Import CSV
-        </button>
+        <p>Import CSV exports (HARMLS / Matrix style) or MLS PDFs and photos. Everything is reviewed before it is added, and you can import more files at any time.</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          <button className="btn-primary" onClick={() => setUi({ importOpen: true })}>
+            Import CSV
+          </button>
+          <button className="btn-secondary" onClick={() => setUi({ docImportOpen: true })}>
+            Import PDF / images
+          </button>
+        </div>
       </EmptyState>
     );
   }

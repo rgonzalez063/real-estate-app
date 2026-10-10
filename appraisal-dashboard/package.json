@@ -13,14 +13,18 @@
     "lint": "eslint .",
     "e2e": "node e2e/smoke.mjs",
     "build:single": "vite build --config vite.singlefile.config.ts && node scripts/rename-single.mjs",
-    "e2e:single": "node e2e/single-file.mjs"
+    "e2e:single": "node e2e/single-file.mjs",
+    "e2e:docs": "node e2e/doc-import.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "idb-keyval": "^6.2.1",
     "papaparse": "^5.4.1",
+    "pdfjs-dist": "^6.4.299",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.12.7",
+    "zod": "^4.6.5",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

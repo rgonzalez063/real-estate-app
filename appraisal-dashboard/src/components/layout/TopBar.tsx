@@ -79,9 +79,13 @@ export function TopBar({ project, scenario, calc }: { project: Project; scenario
         <button className="btn-ghost btn-sm" onClick={redo} disabled={!future.length} title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
           ↷ Redo
         </button>
-        <button className="btn-ghost btn-sm" onClick={() => setUi({ importOpen: true })}>
-          ⇪ Import CSV
-        </button>
+        <Menu
+          label="⇪ Import"
+          items={[
+            { label: 'CSV — comparables or subject', onClick: () => setUi({ importOpen: true }) },
+            { label: 'PDF / image documents (AI or local scan)', onClick: () => setUi({ docImportOpen: true }) },
+          ]}
+        />
         <button className="btn-ghost btn-sm" onClick={() => void save().then(() => toast('Project saved locally.'))} title={lastSavedAt ? `Last saved ${new Date(lastSavedAt).toLocaleTimeString()}` : 'Not saved yet'}>
           {dirty ? '● Save' : '✓ Saved'}
         </button>

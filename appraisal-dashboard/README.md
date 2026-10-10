@@ -33,19 +33,25 @@ npm run preview    # serve dist/ on http://localhost:4173
 npm run e2e        # Playwright browser smoke test against the preview server (needs a Chromium; set PW_EXECUTABLE if not auto-detected)
 npm run build:single  # rebuild release/Gonzalez-Appraisal-Dashboard.html (single self-contained file)
 npm run e2e:single    # open the single file from disk in a browser and check it runs
+npm run e2e:docs      # browser check of the PDF/CSV subject and document import flows (offline path)
 ```
 
 ## How to use
 
 1. **Projects** (top bar) → *New project*, or *Open synthetic demo* for a clearly labelled sample. The demo data is invented and flagged "Demo" on every record.
-2. **Import CSV** → drop one or more MLS exports (HARMLS / Matrix style headers are recognised). Review the suggested header mapping, resolve any prompts (ambiguous day/month order, lot-size units, combined-baths convention), preview the parsed rows and missing values, then decide which potential duplicates to keep. Mappings can be saved as reusable presets.
-3. **Subject** (left panel) → address, effective date, area by category, site, rooms, year built, parking, amenities, ratings, optional coordinates/photos and notes. Every change immediately re-runs the adjustments.
-4. **Adjustment assumptions** (left panel) → every category starts inactive with a blank rate. Activate a category, choose the compared attribute, and enter a rate you can support, plus reason / source / attachment reference. Dollar-per-unit, flat, percentage, dollar-by-rating (unequal intervals allowed), market conditions (manual or monthly rate on the sale or contract date) and concessions (explicit factor on the reported amount) are supported. Custom categories can be added. Possible overlaps (age + condition, several area rules, etc.) are flagged.
-5. **Cards / Comparison grid / Charts** (center) → include or exclude comps, filter and sort, read each comp's unadjusted $/SF (above-grade basis), adjusted price, net/gross adjustments and review flags. Closed sales drive the value; listings and pending sales appear as market context only. Clicking a card, grid column or chart point selects the same property everywhere.
-6. **Selected property** (right panel) → attributes, source row, import notes, inclusion note, weight, and every adjustment line with its formula and source. Override an amount (replaces the rule for that comp), confirm $0, or mark N/A. Unresolved lines keep a comp out of the value indication until resolved.
-7. **Reconciliation summary** (right panel) → unadjusted and adjusted ranges, mean, median, weighted indication (Σ adjusted × weight ÷ Σ weights, weights default to 1), normalized weights, and the separate final reconciled opinion with rationale.
-8. **Scenarios** (top bar) → create, duplicate, rename, delete and compare scenarios side by side. Undo/redo (Ctrl+Z / Ctrl+Shift+Z) covers selections and adjustment edits.
-9. **Export** → adjustment grid CSV (formula-injection safe), full project JSON (re-importable from *Projects → Restore from backup*), and a print-ready report (browser print → PDF).
+2. **Import → CSV** → drop one or more MLS exports (HARMLS / Matrix style headers are recognised). Choose *Import as comparables* (records are appended, so you can import additional sales files at any time) or *Import as subject property* (pick one row on the preview step). Review the suggested header mapping, resolve any prompts (ambiguous day/month order, lot-size units, combined-baths convention), preview the parsed rows and missing values, then decide which potential duplicates to keep. Mappings can be saved as reusable presets.
+3. **Import → PDF / image documents** → drop MLS sheets, closed-sale reports, public-record printouts or photos of listings. Two extraction methods:
+   - **AI extraction with Claude** (default model Claude Opus 5.5; Sonnet 5.5 and Haiku 5.5 selectable). Enter your own Anthropic API key from console.anthropic.com; it is stored only in this browser if you tick *Remember*, and the document is sent to the Claude API for that request only. Reads text and scanned pages, finds several properties in one document, and quotes the exact text each value came from. The request uses structured output so values arrive in the app's field schema, and Anthropic's server-side refusal fallback is enabled.
+   - **Local text scan** (offline, no account). Reads the PDF's text layer in the browser and picks up values next to recognised labels. One property per document; does not work on scanned images.
+
+   Every extracted record lands on a review screen with the values read, confidence, parsing notes and evidence quotes. Mark each one *Comparable*, *Subject* or *Skip*, edit values if needed, and only then is anything added. Nothing is estimated: fields the document does not state stay unknown, combined baths are never split without a confirmed convention, and lot sizes without units are flagged.
+4. **Subject** (left panel) → address, effective date, area by category, site, rooms, year built, parking, amenities, ratings, optional coordinates/photos and notes. Every change immediately re-runs the adjustments.
+5. **Adjustment assumptions** (left panel) → every category starts inactive with a blank rate. Activate a category, choose the compared attribute, and enter a rate you can support, plus reason / source / attachment reference. Dollar-per-unit, flat, percentage, dollar-by-rating (unequal intervals allowed), market conditions (manual or monthly rate on the sale or contract date) and concessions (explicit factor on the reported amount) are supported. Custom categories can be added. Possible overlaps (age + condition, several area rules, etc.) are flagged.
+6. **Cards / Comparison grid / Charts** (center) → include or exclude comps, filter and sort, read each comp's unadjusted $/SF (above-grade basis), adjusted price, net/gross adjustments and review flags. Closed sales drive the value; listings and pending sales appear as market context only. Clicking a card, grid column or chart point selects the same property everywhere.
+7. **Selected property** (right panel) → attributes, source row, import notes, inclusion note, weight, and every adjustment line with its formula and source. Override an amount (replaces the rule for that comp), confirm $0, or mark N/A. Unresolved lines keep a comp out of the value indication until resolved.
+8. **Reconciliation summary** (right panel) → unadjusted and adjusted ranges, mean, median, weighted indication (Σ adjusted × weight ÷ Σ weights, weights default to 1), normalized weights, and the separate final reconciled opinion with rationale.
+9. **Scenarios** (top bar) → create, duplicate, rename, delete and compare scenarios side by side. Undo/redo (Ctrl+Z / Ctrl+Shift+Z) covers selections and adjustment edits.
+10. **Export** → adjustment grid CSV (formula-injection safe), full project JSON (re-importable from *Projects → Restore from backup*), and a print-ready report (browser print → PDF).
 
 ## Calculation rules
 
@@ -59,6 +65,12 @@ npm run e2e:single    # open the single file from disk in a browser and check it
 ## Layout
 
 `src/engine` holds the single calculation engine shared by cards, grid, charts, summary, report and exports. `src/store` is the Zustand store (undo/redo, autosave to IndexedDB). `src/components` holds the UI. `src/tests` contains the Vitest suite; `e2e/` the Playwright smoke test and a sample HARMLS-style CSV.
+
+## Document extraction notes
+
+- AI extraction calls the Claude API directly from the browser with your key (`@anthropic-ai/sdk`, `client.beta.messages.parse` with a Zod output schema). Usage is billed to your Anthropic account. No key is bundled with the app.
+- The local scan uses pdf.js in the browser; its worker is bundled, so it also works in the single-file build.
+- Image files (JPG/PNG/GIF/WEBP) are only supported by AI extraction.
 
 ## Known limitations
 
