@@ -3,6 +3,7 @@ import { useAppStore } from '../../store/useAppStore';
 import type { Comparable, Scenario, ScenarioCalculation } from '../../types';
 import { EmptyState } from '../ui/primitives';
 import { compIndexMap } from '../../engine/compIndex';
+import { SnapshotStrip } from './SnapshotStrip';
 import { CompCard } from './CompCard';
 import { FilterBar } from './FilterBar';
 import { applyFilters, defaultFilters, sortComps, type CompFilters, type SortKey } from './filters';
@@ -48,6 +49,7 @@ export function CardsView({ scenario, calc }: { scenario: Scenario; calc: Scenar
 
   return (
     <div>
+      <SnapshotStrip scenario={scenario} calc={calc} />
       <FilterBar filters={filters} onChange={setFilters} comps={scenario.comparables} subject={scenario.subject.attrs} sort={sort} onSort={setSort} open={filtersOpen} onToggle={() => setFiltersOpen(!filtersOpen)} />
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-navy-900">Closed sales <span className="font-normal text-slate-500">({closed.length} shown · {scenario.comparables.filter((c) => c.included && c.attrs.status === 'closed').length} included)</span></h2>

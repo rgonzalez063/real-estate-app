@@ -54,12 +54,12 @@ export function computeLine(rule: AdjustmentRule, subject: SubjectProperty, comp
   const compValue = attr(c, field);
   const line = baseLine(rule, subjectValue, compValue);
 
-  if (!rule.active) {
-    line.explanation = 'Rule inactive';
+  const override = comp.overrides[rule.id];
+  if (!rule.active && !override) {
+    line.explanation = 'No automatic rule; enter a dollar adjustment in the grid if the properties differ.';
     return line;
   }
 
-  const override = comp.overrides[rule.id];
   if (override) {
     line.status = 'override';
     line.amount = override.amount;

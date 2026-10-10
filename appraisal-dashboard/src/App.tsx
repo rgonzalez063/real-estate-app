@@ -122,8 +122,8 @@ export default function App() {
   if (ui.reportOpen) return <PrintReport project={project} scenario={scenario} calc={calc} />;
 
   const views: { key: CenterView; label: string }[] = [
+    { key: 'grid', label: 'Sales grid' },
     { key: 'cards', label: 'Cards' },
-    { key: 'grid', label: 'Comparison grid' },
     { key: 'charts', label: 'Charts' },
   ];
   const tabs: { key: MobileTab; label: string }[] = [

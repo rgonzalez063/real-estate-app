@@ -65,6 +65,8 @@ export interface AppState {
   setSubjectNotes: (notes: string) => void;
   setSubjectPhotos: (urls: string[]) => void;
   /** Replace subject attributes with imported values (unknown imported values leave existing ones untouched). */
+  setCompPhoto: (id: string, dataUrl: string | null) => void;
+  setSubjectPhoto: (dataUrl: string | null) => void;
   setSubjectFromImport: (attrs: Partial<PropertyAttributes>, source: { file: string; row: Record<string, string>; issues: ParseIssue[] }) => void;
   addComparables: (comps: Comparable[]) => void;
   removeComparables: (ids: string[]) => void;
@@ -132,7 +134,7 @@ export const useAppStore = create<AppState>((set, get) => {
     past: [],
     future: [],
     ui: {
-      view: 'cards',
+      view: 'grid',
       selectedCompId: null,
       leftOpen: true,
       rightOpen: true,
@@ -175,7 +177,7 @@ export const useAppStore = create<AppState>((set, get) => {
 
     loadDemo: () => {
       const project = buildDemoProject();
-      set({ project, past: [], future: [], dirty: true, ui: { ...get().ui, selectedCompId: null, projectsOpen: false, view: 'cards' } });
+      set({ project, past: [], future: [], dirty: true, ui: { ...get().ui, selectedCompId: null, projectsOpen: false, view: 'grid' } });
       scheduleAutosave();
     },
 
@@ -249,6 +251,11 @@ export const useAppStore = create<AppState>((set, get) => {
     setSubjectAttrs: (patch) => get().mutateScenario('Subject', (s) => { Object.assign(s.subject.attrs, patch); }, { key: 'subject:multi' }),
     setSubjectNotes: (notes) => get().mutateScenario('Subject notes', (s) => { s.subject.notes = notes; }, { key: 'subject:notes' }),
     setSubjectPhotos: (urls) => get().mutateScenario('Subject photos', (s) => { s.subject.photoUrls = urls; }),
+    setCompPhoto: (id, dataUrl) => get().mutateScenario('Comparable photo', (s) => {
+      const c = s.comparables.find((x) => x.id === id);
+      if (c) c.photoData = dataUrl;
+    }),
+    setSubjectPhoto: (dataUrl) => get().mutateScenario('Subject photo', (s) => { s.subject.photoData = dataUrl; }),
     setSubjectFromImport: (attrs, source) => get().mutateScenario('Import subject', (s) => {
       for (const [k, v] of Object.entries(attrs)) {
         if (v !== null && v !== undefined) (s.subject.attrs as unknown as Record<string, unknown>)[k] = v;

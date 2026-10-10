@@ -45,6 +45,13 @@ export type FieldKey =
   | 'waterfront'
   | 'waterView'
   | 'location'
+  | 'view'
+  | 'design'
+  | 'tenure'
+  | 'functionalUtility'
+  | 'heatingCooling'
+  | 'energyEfficient'
+  | 'porchPatioDeck'
   | 'amenities'
   | 'concessions'
   | 'latitude'
@@ -107,6 +114,13 @@ export interface PropertyAttributes {
   waterfront: boolean | null;
   waterView: boolean | null;
   location: string | null;
+  view: string | null;
+  design: string | null;
+  tenure: string | null;
+  functionalUtility: string | null;
+  heatingCooling: string | null;
+  energyEfficient: string | null;
+  porchPatioDeck: string | null;
   amenities: string | null;
   concessions: number | null;
   latitude: number | null;
@@ -144,6 +158,8 @@ export interface Comparable {
   synthetic?: boolean;
   /** Present when the record was extracted from a document rather than a CSV. */
   extraction?: ExtractionInfo;
+  /** Photo dropped onto the grid, stored as a resized data URL. */
+  photoData?: string | null;
 }
 
 export interface AdjustmentOverride {
@@ -182,7 +198,14 @@ export type BuiltInCategory =
   | 'waterfront'
   | 'age'
   | 'marketConditions'
-  | 'concessions';
+  | 'concessions'
+  | 'design'
+  | 'tenure'
+  | 'functionalUtility'
+  | 'heatingCooling'
+  | 'energyEfficient'
+  | 'porchPatioDeck'
+  | 'otherAmenities';
 
 export interface AdjustmentRule {
   id: string;
@@ -236,6 +259,8 @@ export interface SubjectProperty {
   sourceFile?: string;
   sourceRow?: Record<string, string>;
   parseIssues?: ParseIssue[];
+  /** Photo dropped onto the grid, stored as a resized data URL. */
+  photoData?: string | null;
 }
 
 /** Provenance for records extracted from PDFs / images. */

@@ -1,0 +1,37 @@
+import { chromium } from 'playwright';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here = path.dirname(fileURLToPath(import.meta.url));
+const browser = await chromium.launch(process.env.PW_EXECUTABLE ? { executablePath: process.env.PW_EXECUTABLE } : {});
+const page = await browser.newPage({ viewport: { width: 1700, height: 1000 } });
+const errors = [];
+page.on('pageerror', (e) => errors.push(e.message));
+page.on('console', (m) => { if (m.type() === 'error' && !m.text().startsWith('Failed to load resource')) errors.push(m.text()); });
+await page.goto(process.env.E2E_BASE_URL ?? 'http://localhost:4173/');
+await page.getByRole('button', { name: 'Open synthetic demo' }).click();
+await page.getByText('Sales comparison grid').waitFor();
+// collapse left panel for a wider grid
+await page.getByTitle('Toggle left panel').click();
+await page.getByTitle('Toggle right panel').click();
+await page.waitForTimeout(400);
+await page.screenshot({ path: path.join(here, 'output', 'grid-new.png') });
+// type an adjustment in sale 1 GLA cell and check the indicated value changes
+const cell = page.getByLabel('Gross living area adjustment for 102 Example Way');
+await cell.fill('10000');
+await page.getByText('$310,000').first().waitFor();
+console.log('✔ typed adjustment produced $310,000');
+await cell.fill('');
+await page.waitForTimeout(300);
+const ind = await page.getByText('$300,000').count();
+console.log(ind > 0 ? '✔ clearing returns to rule/none' : '✘ clear failed');
+await page.locator('.max-h-\\[calc\\(100vh-15rem\\)\\]').evaluate((el) => { el.scrollTop = el.scrollHeight; });
+await page.evaluate(() => { const main = document.querySelector('main'); if (main) main.scrollTop = main.scrollHeight; });
+await page.waitForTimeout(300);
+await page.screenshot({ path: path.join(here, 'output', 'grid-bottom.png') });
+await page.getByRole('tab', { name: 'Cards' }).click();
+await page.getByText('Estimated market value range').waitFor();
+await page.waitForTimeout(300);
+await page.screenshot({ path: path.join(here, 'output', 'cards-strip.png') });
+console.log('✔ cards snapshot strip renders');
+if (errors.length) { console.error('Browser errors:', errors); process.exitCode = 1; } else console.log('✔ no browser errors');
+await browser.close();

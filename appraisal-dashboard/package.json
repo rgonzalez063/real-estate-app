@@ -14,7 +14,8 @@
     "e2e": "node e2e/smoke.mjs",
     "build:single": "vite build --config vite.singlefile.config.ts && node scripts/rename-single.mjs",
     "e2e:single": "node e2e/single-file.mjs",
-    "e2e:docs": "node e2e/doc-import.mjs"
+    "e2e:docs": "node e2e/doc-import.mjs",
+    "e2e:grid": "node e2e/grid-shot.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

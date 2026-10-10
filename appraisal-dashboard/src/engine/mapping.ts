@@ -119,7 +119,7 @@ export function normalizeRows(
     };
 
     // Text fields
-    const textKeys: (FieldKey & keyof PropertyAttributes)[] = ['mlsNumber', 'address', 'city', 'zip', 'neighborhood', 'quality', 'condition', 'renovation', 'remarks', 'location', 'amenities'];
+    const textKeys: (FieldKey & keyof PropertyAttributes)[] = ['mlsNumber', 'address', 'city', 'zip', 'neighborhood', 'quality', 'condition', 'renovation', 'remarks', 'location', 'view', 'design', 'tenure', 'functionalUtility', 'heatingCooling', 'energyEfficient', 'porchPatioDeck', 'amenities'];
     for (const k of textKeys) {
       const v = sanitizeText(get(k));
       (attrs as unknown as Record<string, unknown>)[k] = v;

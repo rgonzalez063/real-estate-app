@@ -162,7 +162,7 @@ function CompDetails({ comp, scenario, calc }: { comp: Comparable; scenario: Sce
   return (
     <div>
       <div className="relative h-36 bg-gradient-to-br from-navy-100 to-slate-200">
-        {a.photoUrl ? <img src={a.photoUrl} alt={a.address ?? 'Property'} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-xs uppercase tracking-wide text-navy-300">No photo</div>}
+        {(comp.photoData ?? a.photoUrl) ? <img src={comp.photoData ?? a.photoUrl ?? undefined} alt={a.address ?? 'Property'} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-xs uppercase tracking-wide text-navy-300">No photo</div>}
         <div className="absolute left-2 top-2 flex gap-1">
           <StatusBadge status={a.status} raw={a.statusRaw} />
           {index && <Badge tone="navy">Comp {index}</Badge>}

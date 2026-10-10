@@ -27,18 +27,19 @@ await expectText('$325,125');
 await page.screenshot({ path: `${S}/shot-cards.png` });
 
 // Activate area rule and set rate
-const ruleBox = page.locator('div.rounded-md', { has: page.getByRole('button', { name: /^Above-grade finished area/ }) }).first();
+const ruleBox = page.locator('div.rounded-md', { has: page.getByRole('button', { name: /^Gross living area/ }) }).first();
 await ruleBox.locator('label:has(input[role=switch])').click(); if (!(await ruleBox.getByRole('switch').isChecked())) fail('toggle did not activate');
-await ruleBox.getByRole('button', { name: /^Above-grade finished area/ }).click();
+await ruleBox.getByRole('button', { name: /^Gross living area/ }).click();
 await ruleBox.locator('input[id$="-rate"]').fill('50');
 await expectText('$321,500');
 await expectText('$310,000'); // comp 1 adjusted on card
 log('live recalculation works');
 
 // Select comp 1 card and check details
+await page.getByRole('tab', { name: 'Cards' }).click();
 await page.getByRole('button', { name: /102 Example Way/ }).first().click();
 const detail = page.getByLabel('Property details and reconciliation');
-await detail.getByRole('button', { name: /Above-grade finished area/ }).click();
+await detail.getByRole('button', { name: /Gross living area/ }).click();
 await expectText('(2,000 − 1,800) × $50.00 = +$10,000');
 await page.screenshot({ path: `${S}/shot-details.png` });
 
@@ -52,8 +53,8 @@ await expectText('$307,500');
 log('override replaces computed adjustment');
 
 // Grid view
-await page.getByRole('tab', { name: 'Comparison grid' }).click();
-await expectText('Original transaction price');
+await page.getByRole('tab', { name: 'Sales grid' }).click();
+await expectText('Adjusted sale price of comparable');
 await page.screenshot({ path: `${S}/shot-grid.png` });
 // Charts
 await page.getByRole('tab', { name: 'Charts' }).click();
@@ -65,7 +66,7 @@ await page.getByRole('tab', { name: 'Cards' }).click();
 // Import flow
 await page.getByRole('button', { name: /Import/ }).first().click();
 await page.getByRole('menuitem', { name: /CSV/ }).click();
-await page.locator('input[type=file]').setInputFiles(path.join(here, 'fixtures', 'harmls_sample.csv'));
+await page.getByRole('dialog').locator('input[type=file]').setInputFiles(path.join(here, 'fixtures', 'harmls_sample.csv'));
 await expectText('Map fields');
 await expectText('Lot sizes have no units');
 await page.getByLabel('Lot size units').selectOption('auto');

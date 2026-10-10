@@ -24,10 +24,11 @@ export function NumberInput({
   disabled?: boolean;
   suffix?: string;
 }) {
-  const [text, setText] = useState(value === null ? '' : String(value));
+  const display = (v: number | null) => (v === null ? '' : v.toLocaleString('en-US', { maximumFractionDigits: 6 }));
+  const [text, setText] = useState(display(value));
   const focused = useRef(false);
   useEffect(() => {
-    if (!focused.current) setText(value === null ? '' : String(value));
+    if (!focused.current) setText(display(value));
   }, [value]);
   return (
     <div className={`relative ${className}`}>
@@ -40,10 +41,12 @@ export function NumberInput({
         placeholder={placeholder}
         value={text}
         disabled={disabled}
-        onFocus={() => (focused.current = true)}
+        onFocus={() => {
+          focused.current = true;
+        }}
         onBlur={() => {
           focused.current = false;
-          setText(value === null ? '' : String(value));
+          setText(display(value));
         }}
         onChange={(e) => {
           const t = e.target.value;

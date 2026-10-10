@@ -38,8 +38,8 @@ export function CompCard({ comp, calc, subject, selected, onSelect, onToggle, ro
       aria-label={`${a.address ?? 'Unknown address'}${comp.included ? ', included' : ', excluded'}`}
     >
       <div className="relative h-32 bg-gradient-to-br from-navy-100 to-slate-200">
-        {a.photoUrl ? (
-          <img src={a.photoUrl} alt={a.address ?? 'Property photo'} className="h-full w-full object-cover" loading="lazy" onError={(e) => ((e.currentTarget.style.display = 'none'))} />
+        {(comp.photoData ?? a.photoUrl) ? (
+          <img src={comp.photoData ?? a.photoUrl ?? undefined} alt={a.address ?? 'Property photo'} className="h-full w-full object-cover" loading="lazy" onError={(e) => ((e.currentTarget.style.display = 'none'))} />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center text-navy-300">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>

@@ -13,7 +13,7 @@ await page.getByRole('button', { name: 'Open synthetic demo' }).click();
 await page.getByText('$325,125').first().waitFor({ timeout: 5000 });
 await page.getByRole('button', { name: /Import/ }).first().click();
 await page.getByRole('menuitem', { name: /CSV/ }).click();
-await page.locator('input[type=file]').setInputFiles(path.join(here, 'fixtures', 'harmls_sample.csv'));
+await page.getByRole('dialog').locator('input[type=file]').setInputFiles(path.join(here, 'fixtures', 'harmls_sample.csv'));
 await page.getByText('Map fields').first().waitFor();
 await page.keyboard.press('Escape');
 await page.waitForTimeout(1600); // autosave
