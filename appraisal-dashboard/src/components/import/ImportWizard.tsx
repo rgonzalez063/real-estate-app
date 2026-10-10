@@ -184,7 +184,7 @@ export function ImportWizard() {
           >
             <p className="text-sm font-medium text-slate-700">Drop one or more CSV exports here</p>
             <p className="mb-3 text-xs text-slate-500">HARMLS / Matrix style exports are recognised. Headers are mapped on the next step; nothing is imported until you confirm.</p>
-            <label className="btn-primary cursor-pointer">
+            <label className="btn-primary relative cursor-pointer">
               Choose files
               <input type="file" accept=".csv,text/csv,.txt,.tsv" multiple className="sr-only" onChange={(e) => e.target.files && void onFiles(e.target.files)} />
             </label>

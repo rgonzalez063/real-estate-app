@@ -42,7 +42,7 @@ function PhotoBox({ src, alt, onDrop }: { src: string | null; alt: string; onDro
           </button>
         </>
       ) : (
-        <label className="flex h-full cursor-pointer flex-col items-center justify-center text-center text-[10px] leading-tight text-slate-500">
+        <label className="relative flex h-full cursor-pointer flex-col items-center justify-center text-center text-[10px] leading-tight text-slate-500">
           <span>Drag photo here</span>
           <span className="text-teal-700 underline">or browse</span>
           <input type="file" accept="image/*" className="sr-only" onChange={(e) => void handle(e.target.files?.[0])} />

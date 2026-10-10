@@ -226,7 +226,7 @@ export function DocumentImport() {
           >
             <p className="text-sm font-medium text-slate-700">Drop MLS sheets, closed-sale reports, or photos of listings</p>
             <p className="mb-3 text-xs text-slate-500">PDF, JPG, PNG, GIF, WEBP. Several properties in one document are fine.</p>
-            <label className="btn-primary cursor-pointer">
+            <label className="btn-primary relative cursor-pointer">
               Choose files
               <input type="file" accept=".pdf,application/pdf,image/*" multiple className="sr-only" onChange={(e) => e.target.files && addFiles(e.target.files)} />
             </label>

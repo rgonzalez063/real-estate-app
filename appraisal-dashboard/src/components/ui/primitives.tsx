@@ -127,7 +127,7 @@ export function Field({ label, children, hint, htmlFor }: { label: string; child
 
 export function Toggle({ checked, onChange, label, id }: { checked: boolean; onChange: (v: boolean) => void; label: string; id?: string }) {
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 text-sm" htmlFor={id}>
+    <label className="relative inline-flex cursor-pointer items-center gap-2 text-sm" htmlFor={id}>
       <input id={id} type="checkbox" role="switch" aria-checked={checked} className="peer sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span className="relative h-5 w-9 rounded-full bg-slate-300 transition peer-checked:bg-teal-600 peer-focus-visible:ring-2 peer-focus-visible:ring-teal-500">
         <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition ${checked ? 'left-[18px]' : 'left-0.5'}`} />

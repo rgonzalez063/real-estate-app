@@ -35,6 +35,19 @@ await expectText('$321,500');
 await expectText('$310,000'); // comp 1 adjusted on card
 log('live recalculation works');
 
+// Regression: toggling a switch far down the rules list must not scroll the page out of view
+{
+  await page.evaluate(() => { const a = document.querySelector('aside[aria-label="Subject and assumptions"] > div'); a.scrollTop = a.scrollHeight; });
+  const sw = page.locator('aside[aria-label="Subject and assumptions"] label:has(input[role=switch])');
+  const last = sw.nth((await sw.count()) - 1);
+  const box = await last.boundingBox();
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await page.waitForTimeout(250);
+  const top = await page.evaluate(() => ({ y: window.scrollY, header: Math.round(document.querySelector('header').getBoundingClientRect().top) }));
+  if (top.y === 0 && top.header === 0) log('switch click keeps the page in place'); else fail('page scrolled after switch click: ' + JSON.stringify(top));
+  await last.click(); // restore
+}
+
 // Select comp 1 card and check details
 await page.getByRole('tab', { name: 'Cards' }).click();
 await page.getByRole('button', { name: /102 Example Way/ }).first().click();

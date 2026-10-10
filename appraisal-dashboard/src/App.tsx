@@ -115,6 +115,17 @@ export default function App() {
     return () => window.removeEventListener('beforeunload', onUnload);
   }, [dirty]);
 
+  // The dashboard manages its own scrolling; the browser window itself must never scroll or the header and panels slide out of view.
+  useEffect(() => {
+    const lock = ready && !!project && !ui.reportOpen;
+    document.documentElement.style.overflow = lock ? 'hidden' : '';
+    document.body.style.overflow = lock ? 'hidden' : '';
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [ready, project, ui.reportOpen]);
+
   if (!ready) {
     return <div className="flex min-h-screen items-center justify-center text-sm text-slate-500">Loading…</div>;
   }
